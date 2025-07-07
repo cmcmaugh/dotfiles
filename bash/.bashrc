@@ -152,3 +152,11 @@ complete -o default -o nospace -F _virtualenvs workon
 
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# Auto-start or attach to tmux session on SSH login
+if command -v tmux >/dev/null \
+   && [ -z "$TMUX" ] \
+   && [ -n "$SSH_CONNECTION" ] \
+   && [ "$TERM" != "dumb" ]; then
+  tmux attach-session -t default || tmux new-session -s default
+fi

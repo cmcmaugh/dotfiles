@@ -1,0 +1,48 @@
+# Vim temporary files
+.vimtmp/
+.vim/plugged/
+*.swp
+*.swo
+*.swn
+
+# FZF install folder
+.fzf/
+
+# SSH keys (never commit these)
+*.pem
+*.key
+*.pub
+.ssh/
+
+# System-specific or volatile config
+.cache/
+.config/*/cache/
+.config/*/logs/
+.DS_Store
+*.bak
+*.old
+*.tmp
+
+# History and session files
+.bash_history
+.zsh_history
+.lesshst
+.python_history
+
+# Log files
+*.log
+
+# Python virtualenvs
+venv/
+.env/
+.venv/
+
+# Installer output or build artifacts
+*.out
+*.o
+*.pyc
+__pycache__/
+
+# Avoid committing personal git config or credentials
+.gitconfig.local
+.git-credentials
