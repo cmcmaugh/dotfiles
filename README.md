@@ -17,3 +17,4 @@ Terminal-purist dotfiles using [GNU Stow](https://www.gnu.org/software/stow/) to
 git clone git@github.com:cmcmaugh/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./install.sh
+```
