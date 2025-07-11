@@ -11,6 +11,14 @@ Terminal-purist dotfiles using [GNU Stow](https://www.gnu.org/software/stow/) to
 - Neovim config (in .config/nvim)
 - Custom scripts (in `bin/`)
 
+
+## Prerequisites
+
+- git
+- stow
+- a Nerd font (on local machine)
+- tmux
+
 ## 🚀 Usage
 
 ```sh

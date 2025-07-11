@@ -9,6 +9,17 @@ stow tmux
 [ -d git ] && stow git
 [ -d bin ] && stow bin
 
+# install tmux tpm if not present
+if [ ! -d ~/.tmux/plugins/tpm ]; then
+  echo "🔌 Installing Tmux Plugin Manager (TPM)..."
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
+# Install Tmux plugins
+echo "📦 Installing Tmux plugins..."
+# Start a detached tmux server, run the installer, then kill the server
+~/.tmux/plugins/tpm/bin/install_plugins
+
 # Install vim-plug if not present
 if [ ! -f ~/.vim/autoload/plug.vim ]; then
   echo "🔌 Installing vim-plug..."
