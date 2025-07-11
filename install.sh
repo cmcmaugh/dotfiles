@@ -17,8 +17,9 @@ fi
 
 # Install Tmux plugins
 echo "📦 Installing Tmux plugins..."
-# Start a detached tmux server, run the installer, then kill the server
-~/.tmux/plugins/tpm/bin/install_plugins
+# We unset SSH_CLIENT temporarily so tpm sources the "local" config,
+# avoiding issues with the remote config in a non-interactive environment.
+(unset SSH_CLIENT; ~/.tmux/plugins/tpm/bin/install_plugins)
 
 # Install vim-plug if not present
 if [ ! -f ~/.vim/autoload/plug.vim ]; then

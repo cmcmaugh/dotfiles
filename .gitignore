@@ -46,3 +46,5 @@ __pycache__/
 # Avoid committing personal git config or credentials
 .gitconfig.local
 .git-credentials
+
+repomix-output.xml
