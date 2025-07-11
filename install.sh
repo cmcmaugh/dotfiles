@@ -45,4 +45,10 @@ if ! command -v rg >/dev/null 2>&1; then
   sudo apt-get update && sudo apt-get install -y ripgrep
 fi
 
+# Install xclip (for tmux-yank clipboard integration)
+if ! command -v xclip >/dev/null 2>&1; then
+  echo "📦 Installing xclip..."
+  sudo apt-get update && sudo apt-get install -y xclip
+fi
+
 echo "✅ Dotfiles fully installed. Reload your shell or run: source ~/.bashrc"
