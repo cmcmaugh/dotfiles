@@ -1,54 +1,87 @@
 #!/bin/bash
 set -e
 
-echo "🔗 Installing dotfiles..."
+# --- Helper Functions ---
+install_package() {
+  PACKAGE=$1
+  if ! command -v "$PACKAGE" >/dev/null 2>&1; then
+    echo "📦 Installing $PACKAGE..."
+    sudo apt-get update && sudo apt-get install -y "$PACKAGE"
+  else
+    echo "✅ $PACKAGE is already installed."
+  fi
+}
 
+echo "🚀 Starting dotfiles installation..."
+
+# --- Package Installation ---
+install_package "stow"
+install_package "zsh"
+install_package "tmux"
+install_package "curl"
+install_package "git"
+install_package "ripgrep"
+install_package "xclip"
+
+# --- Zsh, Oh My Zsh, and Powerlevel10k ---
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "🔌 Installing Oh My Zsh..."
+  # The --unattended flag prevents the script from trying to change the shell or run zsh.
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+else
+  echo "✅ Oh My Zsh is already installed."
+fi
+
+# Install Powerlevel10k theme
+P10K_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+if [ ! -d "$P10K_DIR" ]; then
+  echo "🎨 Installing Powerlevel10k theme..."
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
+else
+  echo "✅ Powerlevel10k is already installed."
+fi
+
+
+# --- Stow Symlinks ---
+echo "🔗 Creating symlinks with Stow..."
 stow bash
 stow vim
 stow tmux
+stow zsh # Add zsh to stow
 [ -d git ] && stow git
 [ -d bin ] && stow bin
 
-# install tmux tpm if not present
+# --- Tmux Plugin Manager (TPM) ---
 if [ ! -d ~/.tmux/plugins/tpm ]; then
   echo "🔌 Installing Tmux Plugin Manager (TPM)..."
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+  echo "📦 Installing Tmux plugins..."
+  (unset SSH_CLIENT; ~/.tmux/plugins/tpm/bin/install_plugins)
+else
+  echo "✅ TPM is already installed."
 fi
 
-# Install Tmux plugins
-echo "📦 Installing Tmux plugins..."
-# We unset SSH_CLIENT temporarily so tpm sources the "local" config,
-# avoiding issues with the remote config in a non-interactive environment.
-(unset SSH_CLIENT; ~/.tmux/plugins/tpm/bin/install_plugins)
-
-# Install vim-plug if not present
+# --- Vim-plug and FZF ---
 if [ ! -f ~/.vim/autoload/plug.vim ]; then
   echo "🔌 Installing vim-plug..."
   curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 fi
 
-# Install Vim plugins
 echo "📦 Installing Vim plugins..."
 vim +PlugInstall +qall
 
-# Install fzf CLI if not already installed
 if [ ! -d ~/.fzf ]; then
   echo "🔍 Installing fzf CLI..."
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  # The install script handles setup for both bash and zsh
   ~/.fzf/install --all
+else
+    echo "✅ fzf is already installed."
 fi
 
-# Install ripgrep (for :Rg) if missing
-if ! command -v rg >/dev/null 2>&1; then
-  echo "📦 Installing ripgrep..."
-  sudo apt-get update && sudo apt-get install -y ripgrep
-fi
-
-# Install xclip (for tmux-yank clipboard integration)
-if ! command -v xclip >/dev/null 2>&1; then
-  echo "📦 Installing xclip..."
-  sudo apt-get update && sudo apt-get install -y xclip
-fi
-
-echo "✅ Dotfiles fully installed. Reload your shell or run: source ~/.bashrc"
+echo -e "\n\n✅ Dotfiles installation complete!"
+echo " L Please change your default shell to Zsh manually by running:"
+echo "   chsh -s \$(which zsh)"
+echo "   After that, log out and log back in for the change to take effect."
+echo "   You can then run 'p10k configure' to customize your prompt."
