@@ -37,8 +37,6 @@ plugins=(
   dirhistory
   sudo
   z
-  zsh-syntax-highlighting
-  zsh-autosuggestions
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -68,10 +66,8 @@ rmve() { rm -r $HOME/venv/"$1"; }
 # FZF keybindings and fuzzy completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Auto-start or attach to tmux session on SSH login
-if command -v tmux >/dev/null \
-   && [ -z "$TMUX" ] \
-   && [ -n "$SSH_CONNECTION" ] \
-   && [ "$TERM" != "dumb" ]; then
-  tmux attach-session -t default || tmux new-session -s default
+# Auto-launch tmux if not already in a session and it's an interactive shell
+# Ensure the path to your tmux_autolaunch.sh is correct
+if [ -f "$HOME/dotfiles/scripts/tmux_autolaunch.sh" ]; then
+    source "$HOME/dotfiles/scripts/tmux_autolaunch.sh"
 fi

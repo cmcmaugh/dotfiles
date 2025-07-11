@@ -160,3 +160,9 @@ if command -v tmux >/dev/null \
    && [ "$TERM" != "dumb" ]; then
   tmux attach-session -t default || tmux new-session -s default
 fi
+
+# Auto-launch tmux if not already in a session and it's an interactive shell
+# Ensure the path to your tmux_autolaunch.sh is correct
+if [ -f "$HOME/dotfiles/scripts/tmux_autolaunch.sh" ]; then
+    source "$HOME/dotfiles/scripts/tmux_autolaunch.sh"
+fi
