@@ -66,8 +66,18 @@ rmve() { rm -r $HOME/venv/"$1"; }
 # FZF keybindings and fuzzy completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+ec2connect() {
+  local name=$1
+  local host
+  host=$(ec2-host "$name") || return 1
+  tmux new-window -n "$name" "ssh conor@$host"
+}
+
 # Auto-launch tmux if not already in a session and it's an interactive shell
 # Ensure the path to your tmux_autolaunch.sh is correct
 if [ -f "$HOME/dotfiles/scripts/tmux_autolaunch.sh" ]; then
     source "$HOME/dotfiles/scripts/tmux_autolaunch.sh"
 fi
+
+
+

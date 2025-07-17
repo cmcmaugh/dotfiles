@@ -83,6 +83,6 @@ fi
 
 echo -e "\n\n✅ Dotfiles installation complete!"
 echo " L Please change your default shell to Zsh manually by running:"
-echo "   chsh -s \$(which zsh)"
+echo "   sudo chsh -s \$(which zsh) \$USER"
 echo "   After that, log out and log back in for the change to take effect."
 echo "   You can then run 'p10k configure' to customize your prompt."
