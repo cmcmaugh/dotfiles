@@ -47,7 +47,8 @@ echo "🔗 Creating symlinks with Stow..."
 stow bash
 stow vim
 stow tmux
-stow zsh # Add zsh to stow
+stow zsh
+stow alacritty
 [ -d git ] && stow git
 [ -d bin ] && stow bin
 
