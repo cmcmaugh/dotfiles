@@ -48,7 +48,18 @@
     # ".gradle/gradle.properties".text = ''
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
-    # '';
+    # '';j
+
+    ".vimrc".source = ./vim/.vimrc;
+    ".bashrc".source = ./bash/.bashrc;
+    ".p10k.zsh".source = ./zsh/.p10k.zsh;
+    ".zshrc".source = ./zsh/.zshrc;
+    ".tmux.conf".source = ./tmux/.tmux.conf;
+    ".tmux/tmux.remote.conf".source = ./tmux/.tmux/tmux.remote.conf;
+
+
+
+
   };
 
   # Home Manager can also manage your environment variables through

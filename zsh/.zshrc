@@ -1,6 +1,11 @@
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+#set up PATH
+if [ -f "$HOME/.path_extra" ]; then
+    source "$HOME/.path_extra"
+fi
+
 # Set name of the theme to load.
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
@@ -81,3 +86,5 @@ fi
 
 
 
+
+if [ -e /home/conor/.nix-profile/etc/profile.d/nix.sh ]; then . /home/conor/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
