@@ -17,7 +17,7 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [
+  home.packages = with pkgs; [
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
@@ -34,7 +34,108 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
+
+    # Core tools
+    git
+    curl
+    ripgrep
+    xsel
+    tree
+
+    fzf
+    tmux
+    zsh
+    zsh-powerlevel10k
+
+
   ];
+
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+
+    # Port your aliases from .zshrc
+    shellAliases = {
+      ll = "ls -alF";
+      la = "ls -A";
+      l = "ls -CF";
+      # alias for dotfiles management
+      config = "/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME";
+    };
+
+    # History settings from .zshrc
+    history = {
+      size = 999999;
+      path = "$HOME/.zsh_history";
+    };
+
+    plugins = [
+      {
+        name = "powerlevel10k";
+        src = pkgs.zsh-powerlevel10k;
+        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+      }
+    ];
+
+    # Oh My Zsh integration
+    oh-my-zsh = {
+      enable = true;
+      plugins = [
+        "git"
+        "common-aliases"
+        "fzf"
+        "tmux"
+        "python"
+        "dirhistory"
+        "sudo"
+        "z"
+      ];
+      # Set the theme. The p10k module handles the rest.
+      # theme = "powerlevel10k/powerlevel10k";
+    };
+
+    # Anything else from .zshrc goes here
+    initExtra = ''
+      source ~/.p10k.zsh
+
+      # For sourcing your tmux auto-launcher
+      if [ -f "$HOME/dotfiles/scripts/tmux_autolaunch.sh" ]; then
+          source "$HOME/dotfiles/scripts/tmux_autolaunch.sh"
+      fi
+
+      ec2connect() {
+        local name=$1
+        local host
+        host=$(ec2-host "$name") || return 1
+        tmux new-window -n "$name" "ssh conor@$host"
+      }
+    '';
+  };
+
+ # MISSING zshrc stuff:
+#########################################################################################
+#     if [ -f "$HOME/.path_extra" ]; then
+#    source "$HOME/.path_extra"
+#     fi
+#
+#   SAVEHIST=999999
+#   setopt appendhistory nomenucomplete notify
+#   setopt extended_history
+#   setopt hist_expire_dups_first
+#   setopt hist_ignore_all_dups
+#   setopt hist_find_no_dups
+#   setopt hist_save_no_dups
+#
+#some virtualenv shortcuts:
+#    mkve2() { virtualenv -p python2.7 $HOME/venv/"$1"; }
+#    mkve310() { virtualenv -p python3.10 $HOME/venv/"$1"; }
+#    mkve38() { virtualenv -p python3.8 $HOME/venv/"$1"; }
+#    mkve312() { virtualenv -p python3.12 $HOME/venv/"$1"; }
+#    rmve() { rm -r $HOME/venv/"$1"; }
+#
+# 'workon' is handled by the 'python' oh-my-zsh plugin which sources virtualenvwrapper
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -53,13 +154,8 @@
     ".vimrc".source = ./vim/.vimrc;
     ".bashrc".source = ./bash/.bashrc;
     ".p10k.zsh".source = ./zsh/.p10k.zsh;
-    ".zshrc".source = ./zsh/.zshrc;
     ".tmux.conf".source = ./tmux/.tmux.conf;
     ".tmux/tmux.remote.conf".source = ./tmux/.tmux/tmux.remote.conf;
-
-
-
-
   };
 
   # Home Manager can also manage your environment variables through
