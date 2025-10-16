@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 
+
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -14,6 +15,12 @@
   # want to update the value, then make sure to first check the Home Manager
   # release notes.
   home.stateVersion = "25.05"; # Please read the comment before changing.
+
+
+
+
+  # Imports
+  imports = [ ./vim.nix ];
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -151,7 +158,6 @@
     #   org.gradle.daemon.idletimeout=3600000
     # '';j
 
-    ".vimrc".source = ./vim/.vimrc;
     ".bashrc".source = ./bash/.bashrc;
     ".p10k.zsh".source = ./zsh/.p10k.zsh;
     ".tmux.conf".source = ./tmux/.tmux.conf;
