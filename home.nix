@@ -53,7 +53,7 @@
     tmux
     zsh
     zsh-powerlevel10k
-
+    yq-go
 
   ];
 
@@ -181,8 +181,11 @@
   #  /etc/profiles/per-user/conor/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
+    EDITOR = "vim";
+    PAGER = "less";
     # EDITOR = "emacs";
   };
+  home.sessionPath = [ "/opt/puppetlabs/bin" ];
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

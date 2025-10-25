@@ -1,5 +1,5 @@
 # In your home.nix or a separate vim.nix file
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.vim = {
@@ -8,6 +8,7 @@
     plugins = with pkgs.vimPlugins; [
       fzf-vim
       vim-tmux-navigator
+      nerdtree
     ];
 
     # Settings from the exact supported list you provided.
@@ -72,4 +73,7 @@
       autocmd BufWritePre * %s/\s\+$//e
     '';
   };
+
+
+  home.file.".vimrc".source = config.home.profileDirectory + "/share/vim/vimrc";
 }
