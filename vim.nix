@@ -75,5 +75,4 @@
   };
 
 
-  home.file.".vimrc".source = config.home.profileDirectory + "/share/vim/vimrc";
 }
