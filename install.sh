@@ -12,16 +12,6 @@ install_package() {
   fi
 }
 
-echo "🚀 Starting dotfiles installation..."
-
-# --- Package Installation ---
-install_package "stow"
-install_package "zsh"
-install_package "tmux"
-install_package "curl"
-install_package "git"
-install_package "ripgrep"
-install_package "xclip"
 
 # --- Zsh, Oh My Zsh, and Powerlevel10k ---
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
@@ -41,16 +31,6 @@ else
   echo "✅ Powerlevel10k is already installed."
 fi
 
-
-# --- Stow Symlinks ---
-echo "🔗 Creating symlinks with Stow..."
-stow bash
-stow vim
-stow tmux
-stow zsh
-stow alacritty
-[ -d git ] && stow git
-[ -d bin ] && stow bin
 
 # --- Tmux Plugin Manager (TPM) ---
 if [ ! -d ~/.tmux/plugins/tpm ]; then

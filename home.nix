@@ -55,10 +55,15 @@
     zsh-powerlevel10k
     yq-go
 
+    #graphical
+    alacritty
+
     #AWS
     opentofu
 
   ];
+
+  xdg.configFile."alacritty/alacritty.toml".source = ./alacritty/alacritty.toml;
 
   programs.zsh = {
     enable = true;

@@ -1,7 +1,9 @@
 # In your home.nix or a separate vim.nix file
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
+  home.packages = [ pkgs.fzf ];
+
   programs.vim = {
     enable = true;
 
@@ -73,6 +75,7 @@
       autocmd BufWritePre * %s/\s\+$//e
     '';
   };
-
-
+  home.activation.createVimDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    mkdir -p $HOME/.vimtmp
+  '';
 }
