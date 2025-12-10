@@ -12,7 +12,10 @@
   outputs = { self, nixpkgs, home-manager, ... }:
     let
       system = "x86_64-linux"; # Change to "aarch64-darwin" if on Apple Silicon, etc.
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree =true;
+      };
     in {
       homeConfigurations."conor" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;

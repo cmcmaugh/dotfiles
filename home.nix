@@ -23,6 +23,7 @@
   imports = [
     ./vim.nix
     ./tmux.nix
+    ./vscode.nix
   ];
 
   # The home.packages option allows you to install Nix packages into your
@@ -62,6 +63,13 @@
 
     #AWS
     opentofu
+
+    #vscode stuff
+    nixfmt-rfc-style
+    jdk17
+    ruff
+    mypy
+    python312
 
   ];
 
@@ -204,6 +212,8 @@
     "${config.home.homeDirectory}/.npm-global/bin"
     "${config.home.homeDirectory}/.local/bin"
   ];
+
+  targets.genericLinux.enable = true;
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
