@@ -20,7 +20,10 @@
 
 
   # Imports
-  imports = [ ./vim.nix ];
+  imports = [
+    ./vim.nix
+    ./tmux.nix
+  ];
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -50,7 +53,6 @@
     tree
 
     fzf
-    tmux
     zsh
     zsh-powerlevel10k
     yq-go
@@ -174,8 +176,6 @@
 
     ".bashrc".source = ./bash/.bashrc;
     ".p10k.zsh".source = ./zsh/.p10k.zsh;
-    ".tmux.conf".source = ./tmux/.tmux.conf;
-    ".tmux/tmux.remote.conf".source = ./tmux/.tmux/tmux.remote.conf;
   };
 
   # Home Manager can also manage your environment variables through
