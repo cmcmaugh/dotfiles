@@ -1,54 +1,93 @@
-# 🛠️ dotfiles
+# ❄️ Nix-Managed Dotfiles
 
-Terminal-purist dotfiles using [GNU Stow](https://www.gnu.org/software/stow/) to manage symlinks. This setup uses Zsh, Oh My Zsh, and the Powerlevel10k theme for a modern and efficient command-line experience.
+A declarative, reproducible development environment managed by **Nix Home Manager**. This configuration runs on Ubuntu (and generic Linux) using Nix Flakes.
 
 ## ✨ Features
 
-- **Shell:** Zsh + Oh My Zsh + Powerlevel10k
-- **Multiplexer:** Tmux with a custom, plugin-rich configuration
-- **Editor:** Vim with essential plugins managed by `vim-plug`
-- **Symlink Management:** GNU Stow
-- **Other Tools:** fzf, ripgrep, and more.
+- **Core:** [Home Manager](https://github.com/nix-community/home-manager) + Nix Flakes.
+- **Shell:** Zsh + Oh My Zsh + [Powerlevel10k](https://github.com/romkatv/powerlevel10k).
+- **Editors:**
+  - **VS Code:** Fully declarative configuration (settings, keybindings, and extensions managed via Nix). Includes Vim emulation.
+  - **Vim:** Fast, customized configuration.
+- **Terminal:** Alacritty + Tmux (with custom plugins & status bar).
+- **Modern CLI Tools:**
+  - `zoxide` (Smarter `cd`)
+  - `eza` (Better `ls`)
+  - `bat` (Better `cat`)
+  - `lazygit` (Terminal Git UI)
+  - `direnv` (Per-directory environment variables)
+  - `fzf` & `ripgrep`
 
-## ✅ Prerequisites
+## 🛠️ Prerequisites
 
-- `git`
-- `stow`
-- `zsh`
-- `tmux`
-- A [Nerd Font](https://www.nerdfonts.com/) (e.g., MesloLGS NF) installed on your local machine for Powerlevel10k icons to render correctly.
+1.  **Install Nix:**
+    ```bash
+    sh <(curl -L https://nixos.org/nix/install) --daemon
+    ```
+
+2.  **Enable Flakes:**
+    Edit `/etc/nix/nix.conf` or `~/.config/nix/nix.conf` and add:
+    ```
+    experimental-features = nix-command flakes
+    ```
+
+3.  **Install Home Manager (Standalone):**
+    ```bash
+    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+    nix-channel --update
+    nix-shell '<home-manager>' -A install
+    ```
 
 ## 🚀 Installation
 
-1.  **Clone the repository:**
-    ```sh
+1.  **Clone this repository:**
+    ```bash
     git clone git@github.com:cmcmaugh/dotfiles.git ~/dotfiles
-    ```
-
-2.  **Run the installer:**
-    ```sh
     cd ~/dotfiles
-    ./install.sh
     ```
 
-3.  **Change your default shell to Zsh:**
-    The installer will prompt you to do this. You'll need to run the following command and enter your password:
-    ```sh
-    chsh -s $(which zsh)
+2.  **Apply the configuration:**
+    *Note: The first run might take a while as it downloads VS Code and other tools.*
+    ```bash
+    home-manager switch --flake .#conor
     ```
-    After running this command, **log out and log back in** for the changes to take effect.
+    *(If you have existing config files causing conflicts, append `-b backup` to the command above).*
 
-4.  **(Optional) Configure Powerlevel10k:**
-    The first time you start Zsh, Powerlevel10k's configuration wizard should launch automatically. If it doesn't, you can run it manually:
-    ```sh
-    p10k configure
-    ```
-    This will walk you through customizing your prompt's appearance. The settings will be saved to `~/.p10k.zsh`, which is symlinked from this repository.
+3.  **Log out and Log back in:**
+    Required for Ubuntu/Linux to detect the `.desktop` files for Nix-installed apps (like VS Code) and to load session variables.
 
-## 📦 What's Included?
+## 📂 Repository Structure
 
-- **Zsh (`zsh/`):** Configuration for Oh My Zsh, Powerlevel10k theme, plugins, aliases, and history.
-- **Bash (`bash/`):** A basic `.bashrc` for compatibility.
-- **Vim (`vim/`):** A minimal and fast `.vimrc` with `vim-plug`.
-- **Tmux (`tmux/`):** A highly customized `.tmux.conf` with plugins via TPM.
-- **Git:** A global `.gitignore` file.
+- **`flake.nix`**: The entry point. Defines the system architecture and allows "unfree" packages (required for VS Code/Copilot).
+- **`home.nix`**: Main configuration file. Imports modules and installs core packages.
+- **`vscode.nix`**: Declarative VS Code setup. **Note:** Settings here are read-only.
+- **`vim.nix`**: Vim settings and plugins.
+- **`tmux.nix`**: Tmux configuration and styling.
+- **`zsh/`**: Zsh specific settings and Powerlevel10k config.
+
+## ⚡ Workflow & Cheat Sheet
+
+### Applying Changes
+Whenever you edit a `.nix` file, run this to apply the changes:
+```bash
+home-manager switch --flake .#conor
+```
+
+### Disk Usage & Cleanup
+
+Nix stores old versions of your profile so you can rollback. To free up space:
+```
+# Check usage
+nix-tree
+
+# Delete old generations
+nix-collect-garbage -d
+````
+
+## 💡 Notes
+
+* VS Code: Your settings.json is now read-only. To change a setting, edit vscode.nix and rebuild.
+* Python/Java: This setup includes python3 and jdk17. direnv is configured to handle project-specific environments automatically.
+* Vim Bindings: VS Code is configured with Vim keybindings.
+    * jk -> <Esc> (Insert Mode)
+    * ; <-> : swap (Normal/Visual Mode)
