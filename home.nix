@@ -75,7 +75,6 @@
 
   ];
 
-  xdg.configFile."alacritty/alacritty.toml".source = ./alacritty/alacritty.toml;
   xdg.configFile."zsh/extra.zsh".source = ./zsh/extra.zsh;
 
   programs.zsh = {
@@ -122,18 +121,45 @@
         "sudo"
         "z"
       ];
-      # Set the theme. The p10k module handles the rest.
-      # theme = "powerlevel10k/powerlevel10k";
     };
 
     # 'workon' is handled by the 'python' oh-my-zsh plugin which sources virtualenvwrapper
-    initExtra = ''
+    initContent = ''
       source ${config.xdg.configHome}/zsh/extra.zsh
-      # Powerlevel10k
-      source ~/.p10k.zsh
     '';
   };
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      font = {
+        size = 12;
 
+        normal = {
+          family = "Hack Nerd Font Mono";
+          style = "Medium";
+        };
+
+        bold = {
+          family = "Hack Nerd Font Mono";
+          style = "Heavy";
+        };
+
+        italic = {
+          family = "Hack Nerd Font Mono";
+          style = "Medium Italic";
+        };
+
+        bold_italic = {
+          family = "Hack Nerd Font Mono";
+          style = "Heavy Italic";
+        };
+      };
+    };
+  };
+  programs.bash = {
+    enable = true;
+    bashrcExtra = builtins.readFile ./bash/bashrc;
+  };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -149,8 +175,12 @@
     #   org.gradle.daemon.idletimeout=3600000
     # '';j
 
-    ".bashrc".source = ./bash/.bashrc;
     ".p10k.zsh".source = ./zsh/.p10k.zsh;
+    ".local/bin/tmux_autolaunch.sh" = {
+      source = ./scripts/tmux_autolaunch.sh;
+      executable = true;
+    };
+
   };
 
   # Home Manager can also manage your environment variables through

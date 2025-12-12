@@ -123,12 +123,7 @@ if ! shopt -oq posix; then
 fi
 [ -r /home/conor/.byobu/prompt ] && . /home/conor/.byobu/prompt   #byobu-prompt#
 
-# .dotifles config mangement
-alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-
-
 #some virtualenv shortcuts:
-mkve2() { virtualenv -p python2.7 $HOME/venv/"$1"; }
 mkve310() { virtualenv -p python3.10 $HOME/venv/"$1"; }
 mkve38() { virtualenv -p python3.8 $HOME/venv/"$1"; }
 mkve312() { virtualenv -p python3.12 $HOME/venv/"$1"; }

@@ -16,12 +16,11 @@ fi
 source ~/.p10k.zsh
 
 # tmux auto-launcher
-if [ -f "$HOME/dotfiles/scripts/tmux_autolaunch.sh" ]; then
-    source "$HOME/dotfiles/scripts/tmux_autolaunch.sh"
+if [ -f "$HOME/.local/bin/tmux_autolaunch.sh" ]; then
+    source "$HOME/.local/bin/tmux_autolaunch.sh"
 fi
 
 # virtualenv helpers
-mkve2()    { virtualenv -p python2.7  "$HOME/venv/$1"; }
 mkve310()  { virtualenv -p python3.10 "$HOME/venv/$1"; }
 mkve38()   { virtualenv -p python3.8  "$HOME/venv/$1"; }
 mkve312()  { virtualenv -p python3.12 "$HOME/venv/$1"; }
