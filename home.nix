@@ -69,11 +69,14 @@
     jdk17
     ruff
     mypy
-    python312
+    (python312.withPackages (ps: with ps; [
+      ipython
+    ]))
 
   ];
 
   xdg.configFile."alacritty/alacritty.toml".source = ./alacritty/alacritty.toml;
+  xdg.configFile."zsh/extra.zsh".source = ./zsh/extra.zsh;
 
   programs.zsh = {
     enable = true;
@@ -86,8 +89,6 @@
       ll = "ls -alF";
       la = "ls -A";
       l = "ls -CF";
-      # alias for dotfiles management
-      config = "/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME";
 
       tf12 = "terraform-1.2.7";
       terraform = "tofu";
@@ -116,7 +117,6 @@
         "git"
         "common-aliases"
         "fzf"
-        "tmux"
         "python"
         "dirhistory"
         "sudo"
@@ -128,44 +128,11 @@
 
     # 'workon' is handled by the 'python' oh-my-zsh plugin which sources virtualenvwrapper
     initExtra = ''
-      # History & options
-      SAVEHIST=999999
-      setopt appendhistory nomenucomplete notify
-      setopt extended_history
-      setopt hist_expire_dups_first
-      setopt hist_ignore_all_dups
-      setopt hist_find_no_dups
-      setopt hist_save_no_dups
-
-      # Optional extra PATH config
-      if [ -f "$HOME/.path_extra" ]; then
-        source "$HOME/.path_extra"
-      fi
-
+      source ${config.xdg.configHome}/zsh/extra.zsh
       # Powerlevel10k
       source ~/.p10k.zsh
-
-      # tmux auto-launcher
-      if [ -f "$HOME/dotfiles/scripts/tmux_autolaunch.sh" ]; then
-          source "$HOME/dotfiles/scripts/tmux_autolaunch.sh"
-      fi
-
-      # virtualenv helpers
-      mkve2()    { virtualenv -p python2.7  "$HOME/venv/$1"; }
-      mkve310()  { virtualenv -p python3.10 "$HOME/venv/$1"; }
-      mkve38()   { virtualenv -p python3.8  "$HOME/venv/$1"; }
-      mkve312()  { virtualenv -p python3.12 "$HOME/venv/$1"; }
-      rmve()     { rm -r "$HOME/venv/$1"; }
-
-      ec2connect() {
-        local name=$1
-        local host
-        host=$(ec2-host "$name") || return 1
-        tmux new-window -n "$name" "ssh conor@$host"
-      }
     '';
   };
-
 
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
