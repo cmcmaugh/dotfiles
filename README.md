@@ -91,3 +91,30 @@ nix-collect-garbage -d
 * Vim Bindings: VS Code is configured with Vim keybindings.
     * jk -> <Esc> (Insert Mode)
     * ; <-> : swap (Normal/Visual Mode)
+
+## Home drive building notes from old setup
+
+These are for reference only
+
+Copy all non-hidden directories
+Copy .VirtualBox/*.xml
+
+sudo apt-get install build-essential virtualbox wireshark nautilus-dropbox fonts-inconsolata
+install the virtualbox extensions pack
+
+.bash_history*
+.gitconfig
+.pylintrc
+.pypirc
+.pip/pip.conf
+
+.aws-default
+.ssh
+.vim
+.TinyCA
+
+sudo usermod -a -G vboxusers $USER
+
+Get following working:
+Dropbox
+Netbeans
