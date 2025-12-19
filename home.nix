@@ -59,10 +59,14 @@
     yq-go
 
     #graphical
+    nerd-fonts.hack
     alacritty
 
     #AWS
     opentofu
+    awscli2
+    ssm-session-manager-plugin
+
 
     #vscode stuff
     nixfmt-rfc-style
@@ -154,6 +158,9 @@
           style = "Heavy Italic";
         };
       };
+      terminal.shell = {
+        program = "${pkgs.zsh}/bin/zsh";
+      };
     };
   };
   programs.bash = {
@@ -211,6 +218,9 @@
   ];
 
   targets.genericLinux.enable = true;
+
+  # Allows fontconfig to discover fonts installed by Home Manager
+  fonts.fontconfig.enable = true;
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
