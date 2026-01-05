@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
-
+let
+ proxyPath = "${config.xdg.configHome}/ssh/ssm-ssh-proxy.sh";
+in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -67,6 +69,9 @@
     awscli2
     ssm-session-manager-plugin
 
+    #programming languages
+    nodejs_20
+
 
     #vscode stuff
     nixfmt-rfc-style
@@ -132,6 +137,33 @@
       source ${config.xdg.configHome}/zsh/extra.zsh
     '';
   };
+
+
+  xdg.configFile."ssh/ssm-ssh-proxy.sh" = {
+    source = pkgs.replaceVars ./ssh/ssm-ssh-proxy.sh {
+      aws = "${pkgs.awscli2}/bin";
+      plugin = "${pkgs.ssm-session-manager-plugin}/bin";
+    };
+    executable = true;
+  };
+
+  programs.ssh = {
+    enable = true;
+
+    matchBlocks."*.aws" = {
+      user = "conor";
+      identitiesOnly = true;
+      identityFile = "${config.home.homeDirectory}/.ssh/id_rsa";
+      serverAliveInterval = 30;
+      serverAliveCountMax = 3;
+
+      # One-liner, no quoting hell
+      proxyCommand = "${proxyPath} %h %p";
+    };
+  };
+
+
+
   programs.alacritty = {
     enable = true;
     settings = {
