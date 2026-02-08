@@ -51,6 +51,7 @@ in
     # Core tools
     gitFull
     curl
+    wget
     ripgrep
     xsel
     tree
