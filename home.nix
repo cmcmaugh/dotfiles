@@ -2,6 +2,14 @@
 
 let
  proxyPath = "${config.xdg.configHome}/ssh/ssm-ssh-proxy.sh";
+  blackPinned = pkgs.python313Packages.black.overrideAttrs (_: rec {
+    version = "25.1.0";
+    src = pkgs.fetchPypi {
+      pname = "black";
+      inherit version;
+      hash = "sha256-M0ltXNEiKtczkTUrSujaFSU8Xeibk6gLPiyNmhnsJmY=";
+    };
+  });
 in
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -48,6 +56,9 @@ in
     #   echo "Hello, ${config.home.username}!"
     # '')
 
+    # (black.override { version = "25.1.0"; } )
+    blackPinned
+
     # Core tools
     gitFull
     curl
@@ -67,6 +78,7 @@ in
 
     #AWS
     opentofu
+    packer
     awscli2
     ssm-session-manager-plugin
 
@@ -84,6 +96,8 @@ in
     mypy
     (python312.withPackages (ps: with ps; [
       ipython
+      tox
+      cryptography
     ]))
 
   ];
@@ -104,8 +118,6 @@ in
 
       tf12 = "terraform-1.2.7";
       terraform = "tofu";
-      pk16 = "packer-1.6.1";
-
     };
 
     # History settings from .zshrc
