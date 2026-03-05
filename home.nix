@@ -91,7 +91,7 @@ in
 
     #vscode stuff
     nixfmt-rfc-style
-    jdk17
+    jdk21
     ruff
     mypy
     (python312.withPackages (ps: with ps; [
@@ -99,6 +99,15 @@ in
       tox
       cryptography
     ]))
+
+    # this is to run tox using system python due to libffi issues
+
+    (writeShellScriptBin "toxu" ''
+      export PATH=/usr/bin:/bin:$PATH
+      exec tox "$@"
+    '')
+
+
 
   ];
 
