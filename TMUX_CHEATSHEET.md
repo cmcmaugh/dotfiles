@@ -6,6 +6,7 @@ This cheatsheet matches `tmux.nix` in this repo.
 
 - Prefix key: `Ctrl+a` (not `Ctrl+b`)
 - Send literal prefix (nested tmux): `Ctrl+a` then `Ctrl+a`
+- Send literal `Ctrl+j`: `Prefix` + `j`
 - Window numbering starts at `1`
 - Pane numbering starts at `1`
 - Mouse support is enabled

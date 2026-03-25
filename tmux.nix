@@ -43,6 +43,7 @@ in
       unbind C-b
       set-option -g prefix C-a
       bind-key C-a send-prefix
+      bind-key j send-keys C-j
 
       # Enable mouse support
       set -g mouse on
