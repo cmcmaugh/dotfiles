@@ -21,7 +21,7 @@ in
     terminal = "screen-256color";
     baseIndex = 1; # Replaces: set -g base-index 1
     escapeTime = 0; # Replaces: set -s escape-time 0
-    historyLimit = 100000;
+    historyLimit = 10000;
 
     # 2. Nix manages plugins (replaces TPM)
     plugins = with pkgs.tmuxPlugins; [

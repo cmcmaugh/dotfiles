@@ -118,7 +118,7 @@
         };
 
         # Visuals & Telemetry
-        "window.zoomLevel" = 2;
+        "window.zoomLevel" = 0;
         "window.restoreWindows" = "none";
         "terminal.integrated.fontFamily" = "'Hack Nerd Font Mono'";
         "redhat.telemetry.enabled" = false;
