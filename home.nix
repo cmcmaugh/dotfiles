@@ -207,7 +207,7 @@ in
     enable = true;
     settings = {
       font = {
-        size = 12;
+        size = 9;
 
         normal = {
           family = "Hack Nerd Font Mono";
