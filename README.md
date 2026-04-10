@@ -87,6 +87,18 @@ spotify_player
 If authentication succeeds but playback does not start, make sure a Linux audio
 session is available on the host (for example PipeWire or PulseAudio).
 
+### Shell Helpers
+
+Some small convenience helpers are configured by default:
+
+- `terraform` -> `tofu`
+- `tf12` runs `terraform-1.2.7`
+- `toxu` runs `tox` against the system Python environment
+- `mkve310`, `mkve38`, `mkve312` create virtualenvs under `~/venv/`
+- `rmve <name>` removes a virtualenv from `~/venv/`
+- `ec2connect <name>` opens a new tmux window and SSHes to the host resolved by `ec2-host`
+- `slcodeartifact` fetches an AWS CodeArtifact token and exports `uv` auth env vars for the Sensorlog repository
+
 ### Disk Usage & Cleanup
 
 Nix stores old versions of your profile so you can rollback. To free up space:
