@@ -2,6 +2,15 @@
 
 let
   proxyPath = "${config.xdg.configHome}/ssh/ssm-ssh-proxy.sh";
+  spotifyPlayerPackage = pkgs.spotify-player.overrideAttrs (old: {
+    buildFeatures =
+      builtins.filter (feature: feature != "rodio-backend") (old.buildFeatures or [ ])
+      ++ [ "pulseaudio-backend" ];
+    cargoBuildFeatures =
+      builtins.filter (feature: feature != "rodio-backend") (old.cargoBuildFeatures or [ ])
+      ++ [ "pulseaudio-backend" ];
+    buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.libpulseaudio ];
+  });
 in
 {
   imports = [
@@ -11,6 +20,7 @@ in
 
   home.packages = with pkgs; [
     xsel
+    playerctl
     nerd-fonts.hack
     alacritty
     opentofu
@@ -54,6 +64,11 @@ in
     serverAliveInterval = 30;
     serverAliveCountMax = 3;
     proxyCommand = "${proxyPath} %h %p";
+  };
+
+  programs."spotify-player" = {
+    enable = true;
+    package = spotifyPlayerPackage;
   };
 
   programs.alacritty = {

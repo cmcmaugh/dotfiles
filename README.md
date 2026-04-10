@@ -73,6 +73,20 @@ Whenever you edit a `.nix` file, run this to apply the changes:
 home-manager switch --flake .#conor
 ```
 
+### Spotify Player
+
+This config installs the terminal client `spotify_player` and `playerctl`.
+
+First-time setup:
+```bash
+home-manager switch --flake .#conor
+spotify_player authenticate
+spotify_player
+```
+
+If authentication succeeds but playback does not start, make sure a Linux audio
+session is available on the host (for example PipeWire or PulseAudio).
+
 ### Disk Usage & Cleanup
 
 Nix stores old versions of your profile so you can rollback. To free up space:
