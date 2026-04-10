@@ -29,7 +29,7 @@ in
     ssm-session-manager-plugin
     nodejs_20
     taskjuggler
-    nixfmt-rfc-style
+    nixfmt
     jdk21
     ruff
     mypy
