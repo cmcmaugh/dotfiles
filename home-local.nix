@@ -2,6 +2,7 @@
 
 let
   proxyPath = "${config.xdg.configHome}/ssh/ssm-ssh-proxy.sh";
+  codexPinned = pkgs.callPackage ./codex.nix { };
   spotifyPlayerPackage = pkgs.spotify-player.overrideAttrs (old: {
     buildFeatures =
       builtins.filter (feature: feature != "rodio-backend") (old.buildFeatures or [ ])
@@ -20,6 +21,7 @@ in
 
   home.packages = with pkgs; [
     xsel
+    codexPinned
     playerctl
     nerd-fonts.hack
     alacritty
