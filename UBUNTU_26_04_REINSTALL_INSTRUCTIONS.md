@@ -72,7 +72,18 @@ Update the base system:
 ```bash
 sudo apt update
 sudo apt full-upgrade -y
-sudo apt install -y git curl rsync vim openssh-client build-essential xz-utils
+sudo apt install -y openssh-client build-essential
+```
+
+`rsync` and `xz-utils` are part of the Ubuntu standard system.
+Home Manager takes over `git`, `curl`, `vim`, and `tree` after the first `switch`.
+
+## Install Desktop Apps
+
+Install the remaining Ubuntu-managed desktop/system packages when ready:
+
+```bash
+sudo apt install -y virtualbox libreoffice
 ```
 
 Optional swapfile if needed:

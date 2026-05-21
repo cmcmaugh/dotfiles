@@ -24,9 +24,12 @@ in
     blackPinned
     gitFull
     curl
+    uv
+    rsync
     wget
     ripgrep
     tree
+    xz
     fzf
     zsh
     zsh-powerlevel10k

@@ -26,7 +26,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     tar -xzf "$src"
     install -Dm755 codex-x86_64-unknown-linux-musl "$out/bin/codex"
     wrapProgram "$out/bin/codex" --prefix PATH : ${
-      lib.makeBinPath ([ ripgrep ] ++ lib.optionals stdenv.hostPlatform.isLinux [ bubblewrap ])
+      lib.makeBinPath [ ripgrep ]
     }
     runHook postInstall
   '';
