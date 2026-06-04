@@ -10,13 +10,7 @@ A declarative, reproducible development environment managed by **Nix Home Manage
   - **VS Code:** Fully declarative configuration (settings, keybindings, and extensions managed via Nix). Includes Vim emulation.
   - **Vim:** Fast, customized configuration.
 - **Terminal:** Alacritty + Tmux (with custom plugins & status bar).
-- **Modern CLI Tools:**
-  - `zoxide` (Smarter `cd`)
-  - `eza` (Better `ls`)
-  - `bat` (Better `cat`)
-  - `lazygit` (Terminal Git UI)
-  - `direnv` (Per-directory environment variables)
-  - `fzf` & `ripgrep`
+- **CLI Tools:** `git`, `curl`, `uv`, `rsync`, `wget`, `ripgrep`, `tree`, `fzf`, `yq`, OpenTofu, AWS CLI, Node.js, Python tooling, Java, and Codex.
 
 ## 🛠️ Prerequisites
 
@@ -31,12 +25,7 @@ A declarative, reproducible development environment managed by **Nix Home Manage
     experimental-features = nix-command flakes
     ```
 
-3.  **Install Home Manager (Standalone):**
-    ```bash
-    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-    nix-channel --update
-    nix-shell '<home-manager>' -A install
-    ```
+No channel-based Home Manager setup is required; this repository is applied through the flake.
 
 ## 🚀 Installation
 
@@ -48,6 +37,10 @@ A declarative, reproducible development environment managed by **Nix Home Manage
 
 2.  **Apply the configuration:**
     *Note: The first run might take a while as it downloads VS Code and other tools.*
+    ```bash
+    nix run github:nix-community/home-manager -- switch --flake .#conor
+    ```
+    After the first successful switch, `home-manager` is installed and can be used directly:
     ```bash
     home-manager switch --flake .#conor
     ```
@@ -102,18 +95,15 @@ Some small convenience helpers are configured by default:
 ### Disk Usage & Cleanup
 
 Nix stores old versions of your profile so you can rollback. To free up space:
-```
-# Check usage
-nix-tree
-
+```bash
 # Delete old generations
 nix-collect-garbage -d
-````
+```
 
 ## 💡 Notes
 
 * VS Code: Your settings.json is now read-only. To change a setting, edit vscode.nix and rebuild.
-* Python/Java: This setup includes python3 and jdk17. direnv is configured to handle project-specific environments automatically.
+* Python/Java: This setup includes Python 3.12 tooling and JDK 21.
 * Vim Bindings: VS Code is configured with Vim keybindings.
     * jk -> <Esc> (Insert Mode)
     * ; <-> : swap (Normal/Visual Mode)
