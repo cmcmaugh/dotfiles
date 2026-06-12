@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   blackPinned = pkgs.python313Packages.black.overrideAttrs (_: rec {
@@ -112,8 +117,19 @@ in
     };
   };
 
+  home.activation.fixSshConfigPermissions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ -L "$HOME/.ssh/config" ]; then
+      ssh_config_target="$(${pkgs.coreutils}/bin/readlink -f "$HOME/.ssh/config")"
+      $DRY_RUN_CMD rm "$HOME/.ssh/config"
+      $DRY_RUN_CMD ${pkgs.coreutils}/bin/install -m 0600 "$ssh_config_target" "$HOME/.ssh/config"
+    elif [ -f "$HOME/.ssh/config" ]; then
+      $DRY_RUN_CMD ${pkgs.coreutils}/bin/chmod 0600 "$HOME/.ssh/config"
+    fi
+  '';
+
   home.sessionVariables = {
     EDITOR = "vim";
+    GIT_SSH_COMMAND = "ssh -F ~/.ssh/config";
     PAGER = "less";
   };
 
