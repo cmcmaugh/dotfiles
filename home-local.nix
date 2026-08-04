@@ -25,6 +25,11 @@ in
     playerctl
     nerd-fonts.hack
     alacritty
+    gh
+    glow
+    graphviz
+    plantuml
+    wl-clipboard
     opentofu
     packer
     awscli2
@@ -35,11 +40,13 @@ in
     jdk21
     ruff
     mypy
-    (python312.withPackages (ps: with ps; [
-      ipython
-      tox
-      cryptography
-    ]))
+    (python312.withPackages (
+      ps: with ps; [
+        ipython
+        tox
+        cryptography
+      ]
+    ))
     (writeShellScriptBin "toxu" ''
       export PATH=/usr/bin:/bin:$PATH
       exec tox "$@"

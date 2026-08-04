@@ -25,9 +25,16 @@ in
     ./tmux.nix
   ];
 
+  nix = {
+    package = pkgs.nix;
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
+
   home.packages = with pkgs; [
     blackPinned
-    gitFull
     curl
     uv
     rsync
@@ -40,6 +47,26 @@ in
     zsh-powerlevel10k
     yq-go
   ];
+
+  programs.git = {
+    enable = true;
+    package = pkgs.gitFull;
+    settings = {
+      user = {
+        name = "Conor McMaugh";
+        email = "conor@sensorlog.ie";
+      };
+      core = {
+        editor = "vim";
+        sshCommand = "ssh -F ~/.ssh/config";
+      };
+      diff.tool = "meld";
+      difftool = {
+        prompt = false;
+        meld.cmd = ''meld "$LOCAL" "$REMOTE"'';
+      };
+    };
+  };
 
   xdg.configFile."zsh/extra.zsh".source = ./zsh/extra.zsh;
 
