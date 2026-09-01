@@ -20,6 +20,7 @@ in
   ];
 
   home.packages = with pkgs; [
+    android-tools
     xsel
     codexPinned
     playerctl
