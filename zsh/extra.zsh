@@ -41,27 +41,10 @@ host=$(ec2-host "$name") || return 1
 tmux new-window -n "$name" "ssh conor@$host"
 }
 slcodeartifact() {
-    local domain="sensorlog"
-    local owner="359794508464"
-    local region="eu-west-1"
-    local token
-
-    token="$({
-        aws codeartifact get-authorization-token \
-            --region "$region" \
-            --domain "$domain" \
-            --domain-owner "$owner" \
-            --query authorizationToken \
-            --output text
-    })" || return 1
-
-    if [ -z "$token" ]; then
-        echo "Failed to get CodeArtifact token" >&2
-        return 1
-    fi
-
+    unset UV_INDEX_CODEARTIFACT_SENSORLOG_PASSWORD
+    export UV_KEYRING_PROVIDER="subprocess"
     export UV_INDEX_CODEARTIFACT_SENSORLOG_USERNAME="aws"
-    export UV_INDEX_CODEARTIFACT_SENSORLOG_PASSWORD="$token"
-
-    echo "uv CodeArtifact auth set for sensorlog"
 }
+
+# Drop inherited tokens; each uv invocation obtains credentials through keyring.
+slcodeartifact

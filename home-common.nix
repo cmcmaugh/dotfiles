@@ -6,6 +6,24 @@
 }:
 
 let
+  keyringsCodeartifact = pkgs.python3Packages.buildPythonPackage {
+    pname = "keyrings-codeartifact";
+    version = "2.1.2";
+    pyproject = true;
+    src = pkgs.fetchPypi {
+      pname = "keyrings_codeartifact";
+      version = "2.1.2";
+      hash = "sha256-rHsAgoQCFu5URceGtbbFmaRVyzoNwC3UD9TVDQvKrC4=";
+    };
+    build-system = with pkgs.python3Packages; [ setuptools setuptools-scm wheel ];
+    dependencies = with pkgs.python3Packages; [ keyring boto3 ];
+    pythonImportsCheck = [ "keyrings.codeartifact" ];
+  };
+  keyringPython = pkgs.python3.withPackages (ps: [ ps.keyring keyringsCodeartifact ]);
+  # Expose only keyring, without replacing the user's Python interpreter.
+  codeartifactKeyring = pkgs.writeShellScriptBin "keyring" ''
+    exec ${keyringPython}/bin/keyring "$@"
+  '';
   blackPinned = pkgs.python313Packages.black.overrideAttrs (_: rec {
     version = "25.1.0";
     src = pkgs.fetchPypi {
@@ -35,6 +53,7 @@ in
 
   home.packages = with pkgs; [
     blackPinned
+    codeartifactKeyring
     curl
     uv
     rsync
@@ -69,6 +88,10 @@ in
   };
 
   xdg.configFile."zsh/extra.zsh".source = ./zsh/extra.zsh;
+  xdg.configFile."python_keyring/keyringrc.cfg".text = ''
+    # Use the normal AWS credential chain, including AWS_PROFILE.
+    [codeartifact]
+  '';
 
   programs.zsh = {
     enable = true;
@@ -158,6 +181,8 @@ in
     EDITOR = "vim";
     GIT_SSH_COMMAND = "ssh -F ~/.ssh/config";
     PAGER = "less";
+    UV_KEYRING_PROVIDER = "subprocess";
+    UV_INDEX_CODEARTIFACT_SENSORLOG_USERNAME = "aws";
   };
 
   home.sessionPath = [

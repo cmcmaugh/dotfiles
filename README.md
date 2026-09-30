@@ -128,7 +128,19 @@ Some small convenience helpers are configured by default:
 - `mkve310`, `mkve38`, `mkve312` create virtualenvs under `~/venv/`
 - `rmve <name>` removes a virtualenv from `~/venv/`
 - `ec2connect <name>` opens a new tmux window and SSHes to the host resolved by `ec2-host`
-- `slcodeartifact` fetches an AWS CodeArtifact token and exports `uv` auth env vars for the Sensorlog repository
+- `slcodeartifact` enables uv's CodeArtifact keyring authentication and clears any old password export; interactive zsh runs it automatically
+
+Home Manager installs `keyring` with a pinned `keyrings.codeartifact` plugin and
+enables uv's subprocess keyring provider. Projects using the
+`codeartifact-sensorlog` index obtain tokens on demand using your AWS credentials;
+no CodeArtifact token is stored in a shell environment variable. This follows
+[uv's CodeArtifact integration](https://docs.astral.sh/uv/guides/integration/aws/).
+
+After switching from the old token helper, open a new terminal and restart
+long-running tools once to discard inherited password variables. For an existing
+zsh shell, run `source ~/.config/zsh/extra.zsh`. AWS credentials must remain valid;
+if an AWS SSO session expires, renew it with `aws sso login --profile <profile>`.
+Select a non-default AWS profile with `AWS_PROFILE` when needed.
 
 ### Disk Usage & Cleanup
 
