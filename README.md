@@ -82,6 +82,44 @@ session is available on the host (for example PipeWire or PulseAudio).
 
 ### Shell Helpers
 
+Interactive zsh shells optionally export `SAFETY_API_KEY` from
+`$HOME/.config/safety/api-key`. The file is read at runtime and must stay outside
+this repository and the Nix store; do not add its contents to Nix configuration
+or `home.sessionVariables`.
+
+To populate or replace it, run this command and paste the key at the hidden
+prompt. The key itself is not entered as a command or saved in shell history.
+The directory is private and the file is created with mode `0600`.
+
+```bash
+bash <<'BASH'
+set +x
+set -eu
+umask 077
+install -d -m 700 "$HOME/.config/safety"
+key_file=$(mktemp "$HOME/.config/safety/.api-key.XXXXXX")
+trap 'rm -f "$key_file"' EXIT
+IFS= read -r -s -p 'Safety API key: ' safety_key </dev/tty
+printf '\n' >/dev/tty
+test -n "$safety_key"
+printf '%s\n' "$safety_key" > "$key_file"
+unset safety_key
+chmod 600 "$key_file"
+mv -fT "$key_file" "$HOME/.config/safety/api-key"
+BASH
+```
+
+After applying Home Manager, open a new shell. Check the export without showing
+its value (the command also avoids the automatic tmux launcher):
+
+```bash
+env -u SAFETY_API_KEY TERM_PROGRAM=vscode zsh -ic \
+  'sh -c '\''test -n "$SAFETY_API_KEY"'\'' && echo "SAFETY_API_KEY is set and exported"'
+stat -c '%a %U %n' "$HOME/.config/safety/api-key"
+```
+
+If the file is absent, startup continues normally without setting the variable.
+
 Some small convenience helpers are configured by default:
 
 - `terraform` -> `tofu`

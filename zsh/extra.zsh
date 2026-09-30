@@ -12,6 +12,14 @@ if [ -f "$HOME/.path_extra" ]; then
 source "$HOME/.path_extra"
 fi
 
+# Optional Safety API key: read at shell startup, never through Nix.
+() {
+    setopt localoptions noxtrace
+    if [[ -f "$HOME/.config/safety/api-key" && -r "$HOME/.config/safety/api-key" ]]; then
+        export SAFETY_API_KEY="$(< "$HOME/.config/safety/api-key")"
+    fi
+}
+
 # Powerlevel10k
 source ~/.p10k.zsh
 
