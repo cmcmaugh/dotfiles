@@ -1,0 +1,8 @@
+abi <abi/4.0>,
+include <tunables/global>
+
+# Permit VS Code's Chromium sandbox to create user namespaces.
+# Match the executable path across Nix store hashes and VS Code versions.
+profile nix-vscode /nix/store/*-vscode-*/lib/vscode/code flags=(unconfined) {
+  userns,
+}
