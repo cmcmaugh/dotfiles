@@ -32,6 +32,7 @@ let
       hash = "sha256-M0ltXNEiKtczkTUrSujaFSU8Xeibk6gLPiyNmhnsJmY=";
     };
   });
+  librarianPuppetGemHome = "${config.home.homeDirectory}/.local/share/gems";
 in
 {
   home.username = "conor";
@@ -55,6 +56,8 @@ in
     blackPinned
     codeartifactKeyring
     curl
+    # Puppet 8 is used by slpuppet; 6.x supports Puppet 7 and 8.
+    ruby
     uv
     rsync
     wget
@@ -177,16 +180,30 @@ in
     fi
   '';
 
+  # nixpkgs does not package librarian-puppet. Install the Puppet 8 compatible
+  # Ruby gem into the user's gem directory, without modifying system Ruby.
+  home.activation.installLibrarianPuppet = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    export PATH=${lib.makeBinPath [ pkgs.stdenv.cc pkgs.gnumake ]}:$PATH
+    export GEM_HOME=${librarianPuppetGemHome}
+    export GEM_PATH=${librarianPuppetGemHome}
+    if ! ${pkgs.ruby}/bin/gem list --local --installed librarian-puppet --version 6.0.0 >/dev/null 2>&1; then
+      $DRY_RUN_CMD ${pkgs.ruby}/bin/gem install --no-document --install-dir "$GEM_HOME" librarian-puppet --version 6.0.0
+    fi
+  '';
+
   home.sessionVariables = {
     EDITOR = "vim";
     GIT_SSH_COMMAND = "ssh -F ~/.ssh/config";
     PAGER = "less";
     UV_KEYRING_PROVIDER = "subprocess";
     UV_INDEX_CODEARTIFACT_SENSORLOG_USERNAME = "aws";
+    GEM_HOME = librarianPuppetGemHome;
+    GEM_PATH = librarianPuppetGemHome;
   };
 
   home.sessionPath = [
     "/opt/puppetlabs/bin"
+    "${librarianPuppetGemHome}/bin"
     "${config.home.homeDirectory}/.npm-global/bin"
     "${config.home.homeDirectory}/.local/bin"
   ];
