@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# Origin: https://github.com/SensorlogWS/slpuppet/blob/aws_transfer_ftp/enable-ssh-aws
+# This local copy is managed by Home Manager.
+export AWS_PAGER=""
+set -euo pipefail
+
+valid_ip() {
+  local ip=$1
+  [[ $ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || return 1
+  IFS='.' read -r a b c d <<<"$ip"
+  [[ $a -le 255 && $b -le 255 && $c -le 255 && $d -le 255 ]]
+}
+
+need_cmd() {
+  command -v "$1" >/dev/null 2>&1 || { echo "Need $1 to be installed"; exit 1; }
+}
+
+need_cmd aws
+need_cmd curl
+need_cmd jq
+
+MY_USER="${USER:-$(id -un)}"
+MY_IP="$(curl -fsS https://checkip.amazonaws.com | tr -d '\r\n')"
+NEW_CIDR="${MY_IP}/32"
+
+echo "Your IP is ${MY_IP} and user x${MY_USER}x"
+
+if ! valid_ip "$MY_IP"; then
+  echo "bad ip, aborting"
+  exit 1
+fi
+
+if [[ ! "$MY_USER" =~ ^(ronan|conor)$ ]]; then
+  echo "bad user must be ronan or conor, aborting"
+  exit 1
+fi
+
+# 1) Find all SGs tagged ssh-from-my-ip = true/yes (case-insensitive)
+SG_IDS="$(aws ec2 describe-security-groups \
+  | jq -r '
+    .SecurityGroups[]?
+    | select(any(.Tags[]?;
+        .Key=="ssh-from-my-ip" and (.Value|test("^(true|yes)$";"i"))
+      ))
+    | .GroupId
+  ')"
+
+if [[ -z "${SG_IDS}" ]]; then
+  echo "No security groups found with tag ssh-from-my-ip=true/yes"
+  exit 0
+fi
+
+for SG in $SG_IDS; do
+  echo "Updating security group ${SG}"
+
+  # 2) Find existing SSH/22 CIDRs for *this* user (could be none)
+  OLD_CIDRS="$(aws ec2 describe-security-groups --group-ids "$SG" \
+    | jq -r --arg user "$MY_USER" '
+      .SecurityGroups[0].IpPermissions[]?
+      | select(.IpProtocol=="tcp" and .FromPort==22 and .ToPort==22)
+      | .IpRanges[]?
+      | select((.Description // "") == $user)
+      | .CidrIp
+    ')"
+
+  for OLD_CIDR in $OLD_CIDRS; do
+    echo "Revoking ingress permission for ${OLD_CIDR} in ${SG} (user ${MY_USER})"
+    aws ec2 revoke-security-group-ingress \
+      --group-id "${SG}" \
+      --protocol tcp \
+      --port 22 \
+      --cidr "${OLD_CIDR}"
+  done
+
+  # 3) If NEW_CIDR already exists (maybe the other user added it), don't try to add a duplicate
+  EXISTS="$(aws ec2 describe-security-groups --group-ids "$SG" \
+    | jq -r --arg cidr "$NEW_CIDR" '
+      any(.SecurityGroups[0].IpPermissions[]?
+        | select(.IpProtocol=="tcp" and .FromPort==22 and .ToPort==22)
+        | .IpRanges[]?; .CidrIp == $cidr)
+    ')"
+
+  if [[ "$EXISTS" == "true" ]]; then
+    echo "SSH already open for ${NEW_CIDR} in ${SG} (possibly added by the other user). Skipping add."
+    continue
+  fi
+
+  echo "Authorizing ingress permission for ${NEW_CIDR} in ${SG} (user ${MY_USER})"
+  aws ec2 authorize-security-group-ingress \
+    --group-id "${SG}" \
+    --ip-permissions "[{\"IpProtocol\":\"tcp\",\"FromPort\":22,\"ToPort\":22,\"IpRanges\":[{\"CidrIp\":\"${NEW_CIDR}\",\"Description\":\"${MY_USER}\"}]}]"
+done

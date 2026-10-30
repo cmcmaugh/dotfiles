@@ -123,7 +123,6 @@ If the file is absent, startup continues normally without setting the variable.
 Some small convenience helpers are configured by default:
 
 - `terraform` -> `tofu`
-- `tf12` runs `terraform-1.2.7`
 - `toxu` runs `tox` against the system Python environment
 - `mkve310`, `mkve38`, `mkve312` create virtualenvs under `~/venv/`
 - `rmve <name>` removes a virtualenv from `~/venv/`

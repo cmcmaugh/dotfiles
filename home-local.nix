@@ -55,7 +55,6 @@ in
   ];
 
   programs.zsh.shellAliases = {
-    tf12 = "terraform-1.2.7";
     terraform = "tofu";
   };
 

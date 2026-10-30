@@ -164,6 +164,14 @@ in
 
   home.file = {
     ".p10k.zsh".source = ./zsh/.p10k.zsh;
+    ".local/bin/enable-ssh-aws" = {
+      source = ./scripts/enable-ssh-aws;
+      executable = true;
+    };
+    ".local/bin/backup.sh" = {
+      source = ./scripts/backup.sh;
+      executable = true;
+    };
     ".local/bin/tmux_autolaunch.sh" = {
       source = ./scripts/tmux_autolaunch.sh;
       executable = true;
